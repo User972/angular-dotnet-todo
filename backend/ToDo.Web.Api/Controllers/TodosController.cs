@@ -10,7 +10,7 @@ namespace ToDo.Web.Api.Controllers
 {
 
     [ApiController]
-    [Route("todos")]
+    [Route("api/todos")]
     public sealed class TodosController(ITodoRepository repository) : ControllerBase
     {
         [HttpGet]

@@ -20,7 +20,7 @@ export type UpdateResult =
 @Injectable({ providedIn: 'root' })
 export class TodoApiService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${inject(API_BASE_URL).replace(/\/+$/, '')}/todos`;
+  private readonly url = `${inject(API_BASE_URL).replace(/\/+$/, '')}/api/todos`;
 
   getAll(): Observable<Todo[]> {
     return this.http.get<Todo[]>(this.url);
