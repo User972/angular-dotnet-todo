@@ -2,7 +2,7 @@
 An app to do small things to make your day productive
 
 Stack
-- Angular
+- Angular 21
 - ASP.NET Core / .NET 10
 - xUnit
 - Vitest
@@ -10,30 +10,47 @@ Stack
 
 Architecture
 Angular:
-UI → TodoStore → TodoApiService → HTTP
+UI -> TodoStore -> TodoApiService -> HTTP
 
 Backend:
-Controller → ITodoRepository → InMemoryTodoRepository
+Controller -> ITodoRepository -> InMemoryTodoRepository
 
-Design decisions
-- In-memory persistence intentionally used per exercise requirement
-- ConcurrentDictionary because ASP.NET handles concurrent requests
-- Immutable TodoItem records
-- TimeProvider for deterministic timestamp tests
-- HTTP 404/409 represented as domain outcomes on the Angular side
-- Signals chosen instead of NgRx because app state is small
 
-Run
+## Run
 Backend:
 dotnet run ...
 
-Frontend:
+## Frontend:
 npm ci
 npm start
 
-Tests:
+## Tests:
 dotnet test
 npm test
 
-Trade-offs / production improvements
-...
+## Key design decisions
+
+- In-memory storage as required by the exercise
+- ConcurrentDictionary to safely handle concurrent requests
+- Immutable Todo records
+- TimeProvider for deterministic time-based testing
+- Signals instead of NgRx because application state is small
+- HTTP/domain concerns separated in the frontend
+- API contracts separated from domain models
+
+## Deliberate limitations
+
+- Todos disappear when the API restarts
+- No authentication or user ownership
+- No external database
+- No distributed persistence
+- Intended as a small engineering exercise
+
+## Production evolution
+
+- EF Core + PostgreSQL/SQL Server
+- Authentication/authorization
+- Structured logging and telemetry
+- Health checks
+- CI/CD
+- E2E tests

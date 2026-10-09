@@ -8,7 +8,7 @@ export interface Todo {
   completedAt: string | null;
 }
 
-/** Mirrors TodoRules.MaxTitleLength on the API. */
+/** Mirrors TodoConstraints.MaxTitleLength on the API. */
 export const MAX_TITLE_LENGTH = 200;
 
 export type TodoFilter = 'all' | 'active' | 'completed';
