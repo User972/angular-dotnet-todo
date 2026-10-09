@@ -1,0 +1,32 @@
+@if (editing()) {
+  <input
+    #editInput
+    class="edit"
+    [value]="todo().title"
+    [maxLength]="maxTitleLength"
+    aria-label="Edit todo"
+    (keydown.enter)="commitEdit(editInput.value)"
+    (keydown.escape)="cancelEdit()"
+    (blur)="commitEdit(editInput.value)"
+  />
+} @else {
+  <!-- Not a <label>: clicks on the title would toggle the checkbox, so double-clicking
+       to edit would flip the todo twice. aria-labelledby still names the checkbox. -->
+  <div class="view">
+    <input
+      type="checkbox"
+      [checked]="todo().isCompleted"
+      [attr.aria-labelledby]="titleId()"
+      (change)="toggled.emit()"
+    />
+    <span class="title" [id]="titleId()" (dblclick)="startEditing()">
+      {{ todo().title }}
+    </span>
+  </div>
+  <div class="actions">
+    @if (!todo().isCompleted) {
+      <button type="button" class="icon" aria-label="Edit" title="Edit" (click)="startEditing()">✎</button>
+    }
+    <button type="button" class="icon danger" aria-label="Delete" title="Delete" (click)="removed.emit()">✕</button>
+  </div>
+}

@@ -1,0 +1,95 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.25rem 0.75rem;
+  /* Transitions (not keyframes) so the fade plays only when an item changes state,
+     not when already-completed items first render. */
+  transition: background-color 500ms ease;
+}
+
+/* Completing a todo fades the row to a soft green: a small "done!" moment. */
+:host(.completed) {
+  background-color: var(--done-bg);
+}
+
+.view {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+input[type='checkbox'] {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+:host(.completed) input[type='checkbox'] {
+  accent-color: var(--done);
+}
+
+.title {
+  overflow-wrap: anywhere;
+  /* The strike-through is always present but transparent, so it can fade in. */
+  text-decoration: line-through transparent;
+  transition:
+    color 500ms ease,
+    text-decoration-color 500ms ease;
+}
+
+:host(.completed) .title {
+  color: var(--done-text);
+  text-decoration-color: currentColor;
+}
+
+.edit {
+  flex: 1;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+
+:host:hover .actions,
+:host:focus-within .actions {
+  opacity: 1;
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.icon:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.icon.danger:hover {
+  color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host,
+  .title {
+    transition: none;
+  }
+}

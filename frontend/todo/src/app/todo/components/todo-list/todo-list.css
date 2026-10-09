@@ -1,0 +1,256 @@
+:host {
+  display: block;
+}
+
+.card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%), 0 8px 24px rgb(0 0 0 / 6%);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.25rem 1rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.add-link {
+  anchor-name: --add-items;
+  padding: 0;
+  font: inherit;
+  font-weight: 500;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.add-link:hover {
+  text-decoration: underline;
+}
+
+.add-link:focus-visible,
+.close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 1.25rem 1rem;
+  padding: 0.6rem 0.75rem;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: 8px;
+}
+
+.error button {
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.todo-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.todo-list li {
+  border-bottom: 1px solid var(--border);
+}
+
+/* Just completed from the Active view: hold while the row's green fade plays, then fade
+   out. Delay + duration = COMPLETED_LINGER_MS in todo-list.ts. */
+.todo-list li.leaving {
+  animation: row-leave 300ms ease-in 900ms forwards;
+}
+
+@keyframes row-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: 1.25rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.filters {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.filters button {
+  padding: 0.3rem 0.65rem;
+  font: inherit;
+  color: inherit;
+  text-transform: capitalize;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  border-color: var(--border);
+}
+
+.filters button[aria-pressed='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---- Add items popover ---- */
+
+.add-panel {
+  --panel-width: 360px;
+  width: min(var(--panel-width), calc(100vw - 2rem));
+  padding: 1rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 14%), 0 2px 6px rgb(0 0 0 / 8%);
+  /* Without anchor positioning support: centred near the top of the viewport. */
+  margin: 12vh auto auto;
+}
+
+/* Where supported, hang the panel just below the "Add Item(s)" link, right-aligned to it,
+   but never closer than 1rem to the viewport's left edge on narrow screens. */
+@supports (top: anchor(bottom)) {
+  .add-panel {
+    position-anchor: --add-items;
+    inset: auto;
+    top: anchor(bottom);
+    right: anchor(right);
+    left: max(1rem, anchor(right) - var(--panel-width));
+    width: auto;
+    margin: 0.5rem 0 0;
+    position-try-fallbacks: flip-block;
+  }
+}
+
+.add-panel:popover-open {
+  animation: panel-in 140ms ease-out;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.close {
+  width: 2rem;
+  height: 2rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.add-panel .error {
+  margin: 0 0 0.75rem;
+}
+
+.new-todo {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.new-todo input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.new-todo input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.new-todo button {
+  padding: 0 1rem;
+  font: inherit;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.new-todo button:hover {
+  filter: brightness(1.08);
+}
+
+.hint {
+  margin: 0.6rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .add-panel:popover-open,
+  .todo-list li.leaving {
+    animation: none;
+  }
+}

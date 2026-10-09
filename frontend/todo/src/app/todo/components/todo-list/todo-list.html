@@ -1,0 +1,102 @@
+@let error = store.error();
+
+<main class="card">
+  <header class="card-header">
+    <h1>Todos</h1>
+    <button #addLink type="button" class="add-link" popovertarget="add-items">Add Item(s)</button>
+  </header>
+
+  <!-- While the add panel is open it shows errors itself, since it would cover this banner. -->
+  @if (error && !addPanelOpen()) {
+    <div class="error" role="alert">
+      <span>{{ error }}</span>
+      <button type="button" aria-label="Dismiss" (click)="store.clearError()">✕</button>
+    </div>
+  }
+
+  @if (!store.loaded()) {
+    <p class="empty">Loading…</p>
+  } @else if (store.todos().length === 0) {
+    <p class="empty">Nothing to do yet. Use “Add Item(s)” to get started.</p>
+  } @else {
+    <ul class="todo-list">
+      @for (todo of visibleTodos(); track todo.id) {
+        <!-- In the Active view, the only completed todos are ones just ticked off and on their way out. -->
+        <li [class.leaving]="todo.isCompleted && filter() === 'active'">
+          <app-todo-item
+            [todo]="todo"
+            (toggled)="toggle(todo)"
+            (renamed)="rename(todo, $event)"
+            (removed)="remove(todo)"
+          />
+        </li>
+      } @empty {
+        <li class="empty">No {{ filter() }} todos.</li>
+      }
+    </ul>
+
+    <footer>
+      <span>{{ remainingCount() }} {{ remainingCount() === 1 ? 'item' : 'items' }} left</span>
+      <div class="filters" role="group" aria-label="Filter todos">
+        @for (option of filters; track option) {
+          <button type="button" [attr.aria-pressed]="filter() === option" (click)="filter.set(option)">
+            {{ option }}
+          </button>
+        }
+      </div>
+    </footer>
+  }
+</main>
+
+<!-- Manual popover: stays open while several items are added; closed via ✕ or Esc. -->
+<div
+  #addPanel
+  id="add-items"
+  class="add-panel"
+  popover="manual"
+  role="dialog"
+  aria-labelledby="add-items-title"
+  (toggle)="onAddPanelToggle($event)"
+  (keydown.escape)="addPanel.hidePopover()"
+>
+  <header class="panel-header">
+    <h2 id="add-items-title">Add items</h2>
+    <button
+      type="button"
+      class="close"
+      popovertarget="add-items"
+      popovertargetaction="hide"
+      aria-label="Close"
+      title="Close"
+    >
+      ✕
+    </button>
+  </header>
+
+  @if (error) {
+    <div class="error" role="alert">
+      <span>{{ error }}</span>
+      <button type="button" aria-label="Dismiss" (click)="store.clearError()">✕</button>
+    </div>
+  }
+
+  <form class="new-todo" (submit)="add($event, titleInput)">
+    <input
+      #titleInput
+      autofocus
+      placeholder="What needs to be done?"
+      aria-label="New todo"
+      autocomplete="off"
+      [maxLength]="maxTitleLength"
+    />
+    <button type="submit">Add</button>
+  </form>
+
+  <p class="hint" aria-live="polite">
+    @if (lastAdded(); as title) {
+      Added “{{ title }}”. Add another, or close when you're done.
+    } @else {
+      Press Enter to add each item.
+    }
+  </p>
+</div>
