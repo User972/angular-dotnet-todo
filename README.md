@@ -17,16 +17,16 @@ Controller -> ITodoRepository -> InMemoryTodoRepository
 
 
 ## Run
-Backend:
-dotnet run ...
+# Backend:
+dotnet run
 
-## Frontend:
-npm ci
-npm start
+# Frontend:
+ng serve
 
 ## Tests:
 dotnet test
-npm test
+
+ng test
 
 ## Key design decisions
 
