@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="ToDo.Web.Api.Tests/ToDo.Web.Api.Tests.csproj" Id="bf440f49-b123-4acd-9f72-a8ace58080d6" />
   <Project Path="ToDo.Web.Api/ToDo.Web.Api.csproj" />
 </Solution>
