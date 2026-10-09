@@ -22,3 +22,18 @@ Design decisions
 - TimeProvider for deterministic timestamp tests
 - HTTP 404/409 represented as domain outcomes on the Angular side
 - Signals chosen instead of NgRx because app state is small
+
+Run
+Backend:
+dotnet run ...
+
+Frontend:
+npm ci
+npm start
+
+Tests:
+dotnet test
+npm test
+
+Trade-offs / production improvements
+...
