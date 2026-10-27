@@ -334,5 +334,72 @@ namespace ToDo.Web.Api.Tests.Repositories
                     UpdateOutcome.Updated or
                     UpdateOutcome.NotFound);
         }
+
+        [Fact]
+        public async Task ConcurrentCompleteAndRename_ExactlyOneWins_OthersAreLocked()
+        {
+            var (repository, clock) = CreateRepository();
+
+            var created = repository.Add("Original");
+
+            clock.Advance(TimeSpan.FromMinutes(5));
+
+            const int taskCount = 32;
+
+            var titles = Enumerable
+                .Range(0, taskCount)
+                .Select(index => $"Title {index}")
+                .ToArray();
+
+            using var barrier = new Barrier(taskCount);
+
+            // LongRunning gives each task a dedicated thread, so all of them can
+            // block on the barrier without starving the thread pool.
+            var tasks = titles
+                .Select(title => Task.Factory.StartNew(
+                    () =>
+                    {
+                        barrier.SignalAndWait();
+
+                        return repository.Update(
+                            created.Id,
+                            title,
+                            true);
+                    },
+                    CancellationToken.None,
+                    TaskCreationOptions.LongRunning,
+                    TaskScheduler.Default))
+                .ToArray();
+
+            TodoUpdateResult[] results = [];
+
+            var exception = await Record.ExceptionAsync(async () =>
+                results = await Task
+                    .WhenAll(tasks)
+                    .WaitAsync(TimeSpan.FromSeconds(10)));
+
+            Assert.Null(exception);
+
+            var winnerIndex = Assert.Single(
+                Enumerable.Range(0, taskCount),
+                index => results[index].Outcome == UpdateOutcome.Updated);
+
+            var expected = created with
+            {
+                Title = titles[winnerIndex],
+                CompletedAt = StartTime.AddMinutes(5),
+            };
+
+            Assert.Equal(expected, results[winnerIndex].Item);
+            Assert.Equal(expected, repository.Get(created.Id));
+
+            Assert.All(
+                results.Where((_, index) => index != winnerIndex),
+                result =>
+                {
+                    Assert.Equal(UpdateOutcome.Locked, result.Outcome);
+                    Assert.Null(result.Item);
+                });
+        }
     }
 }

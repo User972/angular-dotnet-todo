@@ -24,6 +24,7 @@ export class TodoStore {
     this.errorState.set(null);
     try {
       this.todosState.set(await firstValueFrom(this.api.getAll()));
+      //TODO: Consider handling the case where the server returns an empty list or an error.
       this.loadedState.set(true);
     } catch (error) {
       this.fail('load your todos', error);
